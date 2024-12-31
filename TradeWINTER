@@ -1,0 +1,98 @@
+MainAccUsername = "WINTERMEM4" -- Roblox Username of Main Account (Receiver)
+PetNames = {"Blazing Lion", "Frostclaw", "Winter Fawn", "Winter Doe", "Winter Buck", "Ratatoskr", "Bauble Buddies", "Mistletroll", "Great Pyrenees", "Mr. Whiskerpips"} -- Pet Names (spelling and capitals matter)
+
+repeat task.wait(1) until game:IsLoaded() and game:GetService("ReplicatedStorage"):FindFirstChild("ClientModules") and game:GetService("ReplicatedStorage").ClientModules:FindFirstChild("Core") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager") and game:GetService("ReplicatedStorage").ClientModules.Core.UIManager:FindFirstChild("Apps") and game:GetService("ReplicatedStorage").ClientModules.Core.UIManager.Apps:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp"):FindFirstChild("Whiteout")
+local RS = game:GetService("ReplicatedStorage")
+local ReplicatedStorage = RS
+local ClientData = require(RS.ClientModules.Core.ClientData)
+local RouterClient = require(RS.ClientModules.Core:WaitForChild("RouterClient"):WaitForChild("RouterClient"))
+local Main_Menu = require(RS.ClientModules.Core.UIManager.Apps.MainMenuApp)
+local Player = game:GetService("Players").LocalPlayer
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+for i,v in pairs(getconnections(game.Players.LocalPlayer.Idled)) do v:Disable() end
+for i, v in pairs(debug.getupvalue(RouterClient.init, 7)) do v.Name = i end
+
+function findPetID(petName)
+    -- Define the naming logic directly within this function
+    local specialWinterPets = {
+        ["Winter Fawn"] = "winter_2024_winter_fawn",
+        ["Winter Doe"] = "winter_2024_winter_doe",
+        ["Winter Buck"] = "winter_2024_winter_buck"
+    }
+
+    local formattedName
+    if specialWinterPets[petName] then
+        formattedName = specialWinterPets[petName]
+    else
+        formattedName = "winter_2024_minigame_" .. string.lower(string.gsub(petName, "%s+", "_"))
+    end
+
+    for _, entry in pairs(require(game:GetService("ReplicatedStorage").ClientDB.Inventory.InventoryDB).pets) do
+        if type(entry) == "table" and string.lower(entry.id) == string.lower(formattedName) then
+            return entry.id
+        end
+    end
+    return nil
+end
+
+function CheckPetRarity(PetName)
+    for _, entry in pairs(require(game:GetService("ReplicatedStorage").ClientDB.Inventory.InventoryDB).pets) do
+        if type(entry) == "table" and string.lower(entry.name) == string.lower(PetName) then
+            if entry.rarity == "common" then
+                return "Common"
+            elseif entry.rarity == "uncommon" then 
+                return "Uncommon"
+            elseif entry.rarity == "rare" then 
+                return "Rare"
+            elseif entry.rarity == "ultra_rare" then 
+                return "Ultra Rare"
+            elseif entry.rarity == "legendary" then 
+                return "Legendary"
+            end
+        end
+    end
+end
+
+function InvEmpty()
+    for _, petName in ipairs(PetNames) do
+        for i,v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
+            if v.id == findPetID(petName) then 
+                return false
+            end
+        end
+    end
+    return true
+end
+
+repeat
+    if game.Players:FindFirstChild(MainAccUsername) and (not InvEmpty()) then
+        repeat task.wait(1)
+            RS.API:WaitForChild("TradeAPI/SendTradeRequest"):FireServer(game:GetService("Players"):WaitForChild(MainAccUsername))
+        until game:GetService("Players").LocalPlayer.PlayerGui.TradeApp.Frame.Visible
+
+        -- Add Pets
+        count = 0
+        for _, petName in ipairs(PetNames) do
+            for i,v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
+                if v.id == findPetID(petName) then        
+                    RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
+                    count += 1
+                    if count >= 18 then break end
+                end
+            end
+        end
+
+        -- Accept/Confirm
+        while game:GetService("Players").LocalPlayer.PlayerGui.TradeApp.Frame.Visible do
+            game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("TradeAPI/AcceptNegotiation"):FireServer()
+            wait(0.1)
+            game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("TradeAPI/ConfirmTrade"):FireServer()
+            wait(0.1)
+        end
+    end
+    task.wait(1.5)
+    print("Waiting for acc")
+until InvEmpty()
+
+print("Account Completed.")
