@@ -1,4 +1,4 @@
-MainAccUsername = "FrostMS300" -- Roblox Username of Main Account (Receiver)
+MainAccUsername = "FrostMS301" -- Roblox Username of Main Account (Receiver)
 PetNames = {"Blazing Lion", "Frostclaw", "Winter Fawn", "Winter Doe", "Winter Buck", "Ratatoskr", "Bauble Buddies", "Mistletroll", "Great Pyrenees", "Mr. Whiskerpips"} -- Pet Names (spelling and capitals matter)
 
 repeat task.wait(1) until game:IsLoaded() and game:GetService("ReplicatedStorage"):FindFirstChild("ClientModules") and game:GetService("ReplicatedStorage").ClientModules:FindFirstChild("Core") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager") and game:GetService("ReplicatedStorage").ClientModules.Core.UIManager:FindFirstChild("Apps") and game:GetService("ReplicatedStorage").ClientModules.Core.UIManager.Apps:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp"):FindFirstChild("Whiteout")
