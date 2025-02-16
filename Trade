@@ -1,4 +1,4 @@
-MainAccUsername = "irishaudio456" -- Roblox Username of Main Account (Receiver)
+MainAccUsername = "mystockforu" -- Roblox Username of Main Account (Receiver)
 PetNames = {"Hopbop", "Snorgle", "Moonpine", "Zeopod", "Puptune", "Starmite", "Dimension Drifter", "Sunglider"} -- Pet Names (spelling and capitals matter)
 
 repeat task.wait(1) until game:IsLoaded() and game:GetService("ReplicatedStorage"):FindFirstChild("ClientModules") and game:GetService("ReplicatedStorage").ClientModules:FindFirstChild("Core") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager").Apps:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp"):FindFirstChild("Whiteout")
