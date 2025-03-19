@@ -1,4 +1,4 @@
-MainAccUsername = "WINTERMEM1" -- Main account to trade with
+MainAccUsername = "WINTERMEM3" -- Main account to trade with
 PetNames = {"Puptune", "Clover Cow", "Sunglider", "Love Bird", "Sweetheart Rat"} -- Pets to handle
 
 repeat task.wait(1) until game:IsLoaded()
