@@ -40,7 +40,7 @@ repeat
             RS.API:WaitForChild("TradeAPI/SendTradeRequest"):FireServer(game:GetService("Players"):WaitForChild(MainAccUsername))
         until game:GetService("Players").LocalPlayer.PlayerGui.TradeApp.Frame.Visible
 
-        -- Add Pets with Priority on Neon
+        -- Add Pets with Priority on Neon and Mega Neon
         countA = 0
         petsToTrade = {}
         for _, petName in ipairs(PetNames) do
@@ -50,18 +50,32 @@ repeat
             end
         end
 
+        -- Debugging Output
+        print("Starting trade process...")
+
         for i, v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
-            if petsToTrade[v.id] and petsToTrade[v.id] > 0 and v.properties.neon and (not v.properties.mega_neon) then
-                RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
-                petsToTrade[v.id] = petsToTrade[v.id] - 1
-                task.wait(0.1)
-                countA = countA + 1
-                if countA >= 18 then break end
+            if petsToTrade[v.id] and petsToTrade[v.id] > 0 then
+                if v.properties and v.properties.neon then
+                    print("Adding Neon Pet: ", v.id)
+                    RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
+                    petsToTrade[v.id] = petsToTrade[v.id] - 1
+                    task.wait(0.1)
+                    countA = countA + 1
+                    if countA >= 18 then break end
+                elseif v.properties and v.properties.mega_neon then
+                    print("Adding Mega Neon Pet: ", v.id)
+                    RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
+                    petsToTrade[v.id] = petsToTrade[v.id] - 1
+                    task.wait(0.1)
+                    countA = countA + 1
+                    if countA >= 18 then break end
+                end
             end
         end
 
         for i, v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
             if petsToTrade[v.id] and petsToTrade[v.id] > 0 then
+                print("Adding Regular Pet: ", v.id)
                 RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                 petsToTrade[v.id] = petsToTrade[v.id] - 1
                 task.wait(0.1)
