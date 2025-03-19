@@ -55,7 +55,7 @@ repeat
 
         for i, v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
             if petsToTrade[v.id] and petsToTrade[v.id] > 0 then
-                if v.properties and v.properties.neon then
+                if v.properties and v.properties.neon and (not v.properties.mega_neon) then
                     print("Adding Neon Pet: ", v.id)
                     RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                     petsToTrade[v.id] = petsToTrade[v.id] - 1
