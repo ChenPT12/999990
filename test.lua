@@ -1,7 +1,8 @@
 MainAccUsername = "WINTERMEM3" -- Roblox Username of Main Account (Receiver)
 PetNames = {"Puptune", "Clover Cow", "Sunglider", "Love Bird", "Sweetheart Rat"} -- Pet Names (spelling and capitals matter)
 
-repeat task.wait(1) until game:IsLoaded() and game:GetService("ReplicatedStorage"):FindFirstChild("ClientModules") and game:GetService("ReplicatedStorage").ClientModules:FindFirstChild("Core") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager").Apps:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp"):FindFirstChild("Whiteout")
+repeat task.wait(1) until game:IsLoaded() and game:GetService("ReplicatedStorage"):FindFirstChild("ClientModules") and game:GetService("ReplicatedStorage").ClientModules:FindFirstChild("Core") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager") and game:GetService("ReplicatedStorage").ClientModules.Core.UIManager.Apps:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp"):FindFirstChild("Whiteout")
+
 local RS = game:GetService("ReplicatedStorage")
 local ReplicatedStorage = RS
 local ClientData = require(RS.ClientModules.Core.ClientData)
@@ -22,24 +23,6 @@ function findPetID(petName)
     return nil
 end
 
-function CheckPetRarity(PetName)
-    for _, entry in pairs(require(game:GetService("ReplicatedStorage").ClientDB.Inventory.InventoryDB).pets) do
-        if type(entry) == "table" and string.lower(entry.name) == string.lower(PetName) then
-            if entry.rarity == "common" then
-                return "Common"
-            elseif entry.rarity == "uncommon" then 
-                return "Uncommon"
-            elseif entry.rarity == "rare" then 
-                return "Rare"
-            elseif entry.rarity == "ultra_rare" then 
-                return "Ultra Rare"
-            elseif entry.rarity == "legendary" then 
-                return "Legendary"
-            end
-        end
-    end
-end
-
 function InvEmpty()
     for _, petName in ipairs(PetNames) do
         for i,v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
@@ -57,19 +40,37 @@ repeat
             RS.API:WaitForChild("TradeAPI/SendTradeRequest"):FireServer(game:GetService("Players"):WaitForChild(MainAccUsername))
         until game:GetService("Players").LocalPlayer.PlayerGui.TradeApp.Frame.Visible
 
-        -- Add Pets
-        count = 0
+        -- Add Pets with Priority on Neon
+        countA = 0
+        petsToTrade = {}
         for _, petName in ipairs(PetNames) do
-            for i,v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
-                if v.id == findPetID(petName) and v.properties.neon and v.properties.mega_neon then        
-                    RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
-                    count += 1
-                    if count >= 18 then break end
-                end
+            local petID = findPetID(petName)
+            if petID then
+                petsToTrade[petID] = (petsToTrade[petID] or 0) + 1
             end
         end
 
-        -- Accept/Confirm
+        for i, v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
+            if petsToTrade[v.id] and petsToTrade[v.id] > 0 and v.properties.neon and (not v.properties.mega_neon) then
+                RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
+                petsToTrade[v.id] = petsToTrade[v.id] - 1
+                task.wait(0.1)
+                countA = countA + 1
+                if countA >= 18 then break end
+            end
+        end
+
+        for i, v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
+            if petsToTrade[v.id] and petsToTrade[v.id] > 0 then
+                RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
+                petsToTrade[v.id] = petsToTrade[v.id] - 1
+                task.wait(0.1)
+                countA = countA + 1
+                if countA >= 18 then break end
+            end
+        end
+
+        -- Accept/Confirm Trade
         while game:GetService("Players").LocalPlayer.PlayerGui.TradeApp.Frame.Visible do
             game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("TradeAPI/AcceptNegotiation"):FireServer()
             wait(0.1)
