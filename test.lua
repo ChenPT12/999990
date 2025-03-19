@@ -56,14 +56,14 @@ repeat
         for i, v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
             if petsToTrade[v.id] and petsToTrade[v.id] > 0 then
                 if v.properties and v.properties.neon and (not v.properties.mega_neon) then
-                    print("Adding Neon Pet: ", v.id)
+                    print("Adding Neon Pet: ", v.id, v.unique)
                     RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                     petsToTrade[v.id] = petsToTrade[v.id] - 1
                     task.wait(0.1)
                     countA = countA + 1
                     if countA >= 18 then break end
                 elseif v.properties and v.properties.mega_neon then
-                    print("Adding Mega Neon Pet: ", v.id)
+                    print("Adding Mega Neon Pet: ", v.id, v.unique)
                     RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                     petsToTrade[v.id] = petsToTrade[v.id] - 1
                     task.wait(0.1)
@@ -75,7 +75,7 @@ repeat
 
         for i, v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
             if petsToTrade[v.id] and petsToTrade[v.id] > 0 then
-                print("Adding Regular Pet: ", v.id)
+                print("Adding Regular Pet: ", v.id, v.unique)
                 RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                 petsToTrade[v.id] = petsToTrade[v.id] - 1
                 task.wait(0.1)
@@ -85,11 +85,16 @@ repeat
         end
 
         -- Accept/Confirm Trade
-        while game:GetService("Players").LocalPlayer.PlayerGui.TradeApp.Frame.Visible do
-            game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("TradeAPI/AcceptNegotiation"):FireServer()
-            wait(0.1)
-            game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("TradeAPI/ConfirmTrade"):FireServer()
-            wait(0.1)
+        if countA > 0 then
+            print("Pets added to trade. Confirming...")
+            while game:GetService("Players").LocalPlayer.PlayerGui.TradeApp.Frame.Visible do
+                game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("TradeAPI/AcceptNegotiation"):FireServer()
+                wait(0.1)
+                game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("TradeAPI/ConfirmTrade"):FireServer()
+                wait(0.1)
+            end
+        else
+            print("No pets were added to the trade!")
         end
     end
     task.wait(1.5)
