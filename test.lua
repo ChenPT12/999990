@@ -43,7 +43,7 @@ end
 function InvEmpty()
     for _, petName in ipairs(PetNames) do
         for i,v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
-            if v.id == findPetID(petName) then 
+            if v.id == findPetID(petName) and v.properties.neon and v.properties.mega_neon then 
                 return false
             end
         end
