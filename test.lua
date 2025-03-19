@@ -61,7 +61,7 @@ repeat
         count = 0
         for _, petName in ipairs(PetNames) do
             for i,v in pairs(require(game.ReplicatedStorage.ClientModules.Core.ClientData).get_data()[game.Players.LocalPlayer.Name].inventory.pets) do
-                if v.id == findPetID(petName) then        
+                if v.id == findPetID(petName) and v.properties.neon and v.properties.mega_neon then        
                     RS.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                     count += 1
                     if count >= 18 then break end
