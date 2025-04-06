@@ -1,5 +1,5 @@
 MainAccUsername = "Cloerrw93" -- Roblox Username of Main Account (Receiver)
-PetNames = {"Puptune", "Clover Cow", "Frostbite Bear", "Frozen Penguin", "Snowy Mammoth", "Icy Porcupine"} -- Pet Names (spelling and capitals matter)
+PetNames = {"Puptune", "Clover Cow", "Frostbite Bear", "Frozen Penguin", "Snowy Mammoth", "Icy Porcupine", "Bakeneko"} -- Pet Names (spelling and capitals matter)
 
 repeat task.wait(1) until game:IsLoaded() and game:GetService("ReplicatedStorage"):FindFirstChild("ClientModules") and game:GetService("ReplicatedStorage").ClientModules:FindFirstChild("Core") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager") and game:GetService("ReplicatedStorage").ClientModules.Core:FindFirstChild("UIManager").Apps:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp") and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("TransitionsApp"):FindFirstChild("Whiteout")
 local RS = game:GetService("ReplicatedStorage")
