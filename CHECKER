@@ -76,7 +76,6 @@ end
 for i, v in pairs(Data.get_data()[tostring(game.Players.LocalPlayer)].inventory.food) do
     if v.kind == "pet_age_potion" then
         Counter = Counter + 1
-        task.wait(0.1)
     end
 end
 
